@@ -15,9 +15,9 @@ import java.util.Date;
 public class CustomExceptionController extends RuntimeException{
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request){
-        Error exceptionResponse = new Error(new Date(), ErrorCodes.INTERNAL_SERVER_ERROR.getCode(),ex.getMessage(),
+        Error exceptionResponse = new Error(new Date(), ErrorCodes.BAD_REQUEST_ERROR.getCode(),ex.getMessage(),
                 request.getDescription(false));
-        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)

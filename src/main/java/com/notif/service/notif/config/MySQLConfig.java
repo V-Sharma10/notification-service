@@ -1,17 +1,27 @@
 package com.notif.service.notif.config;
 
+import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.activation.DataSource;
+import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
+@EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactory",
+        basePackages = "com.notif.service.notif.repositories")
 public class MySQLConfig {
 
     @Value("${db.driver}")
@@ -26,17 +36,16 @@ public class MySQLConfig {
     @Value("${db.username}")
     private String DB_USERNAME;
 
-    @Value("${hibernate.dialect}")
-    private String HIBERNATE_DIALECT;
 
-    @Value("${hibernate.show_sql}")
-    private String HIBERNATE_SHOW_SQL;
 
     @Value("${hibernate.hbm2ddl.auto}")
     private String HIBERNATE_HBM2DDL_AUTO;
 
+    @Value("${entityManager.packagesToScan}")
+    private String ENTITYMANAGER_PACKAGES_TO_SCAN;
 
-    @Bean
+
+    @Bean("datasource")
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(DB_DRIVER);
@@ -47,26 +56,32 @@ public class MySQLConfig {
     }
 
 
-    @Bean
+    @Bean(name="entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
     LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource());
-
+        sessionFactoryBean.setPackagesToScan(ENTITYMANAGER_PACKAGES_TO_SCAN);
         Properties hibernateProperties = new Properties();
-        hibernateProperties.put("hibernate.dialect", HIBERNATE_DIALECT);
-        hibernateProperties.put("hibernate.show_sql", HIBERNATE_SHOW_SQL);
         hibernateProperties.put("hibernate.hbm2ddl.auto", HIBERNATE_HBM2DDL_AUTO);
-        sessionFactoryBean.setHibernateProperties(hibernateProperties);
 
+        try{
+            sessionFactoryBean.setHibernateProperties(hibernateProperties);
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
         return sessionFactoryBean;
     }
 
 
+//    @Bean
+//    public HibernateTransactionManager transactionManager() {
+//        HibernateTransactionManager transactionManager =
+//                new HibernateTransactionManager();
+//        transactionManager.setSessionFactory(sessionFactory().getObject());
+//        return transactionManager;
+//    }
     @Bean
-    public HibernateTransactionManager transactionManager() {
-        HibernateTransactionManager transactionManager =
-                new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
-        return transactionManager;
+    public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory")EntityManagerFactory entityManagerFactory){
+        return new JpaTransactionManager(entityManagerFactory);
     }
 }
