@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(indexName = "sms_service")
-public class MessageESModel {
+public class MessageESModel implements Serializable {
     private String id;
     private String phoneNumber;
     private String message;
