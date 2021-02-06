@@ -59,16 +59,30 @@ public class MessageServiceImpl implements MessageService{
             } catch (InvocationTargetException e) {
                 throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
+
+             /** Updating Value before adding to DB **/
             String id = UUID.randomUUID().toString();
             msgDto.setId(id);msgDto.setStatus("queued");
 
             /** Getting added to DB **/
             try{
                 messageDBRepository.save(msgDto);
-                System.out.println(msgDto);
             } catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
+
+
+
+
+
+            /**
+             * Once the message is sent over to kafka it means, it has been successfully sent.
+             *
+             * **/
+
+
+
+
 
              /** copied MessageDtoModel(msgDto) to MessageESModel(msgES) **/
             try {
@@ -79,8 +93,7 @@ public class MessageServiceImpl implements MessageService{
                 throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
 
-
-             /** Getting added to ES **/
+            /** Getting added to ES **/
             try{
                 messageESRepository.save(msgES);
             }catch (Exception ex){

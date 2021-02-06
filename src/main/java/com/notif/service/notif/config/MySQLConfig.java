@@ -1,20 +1,17 @@
 package com.notif.service.notif.config;
 
-import org.hibernate.jpa.boot.spi.EntityManagerFactoryBuilder;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.activation.DataSource;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
@@ -36,8 +33,6 @@ public class MySQLConfig {
     @Value("${db.username}")
     private String DB_USERNAME;
 
-
-
     @Value("${hibernate.hbm2ddl.auto}")
     private String HIBERNATE_HBM2DDL_AUTO;
 
@@ -45,6 +40,7 @@ public class MySQLConfig {
     private String ENTITYMANAGER_PACKAGES_TO_SCAN;
 
 
+    @Primary
     @Bean("datasource")
     public DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -55,7 +51,7 @@ public class MySQLConfig {
         return dataSource;
     }
 
-
+    @Primary
     @Bean(name="entityManagerFactory")
     public LocalSessionFactoryBean sessionFactory() {
     LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
@@ -72,16 +68,10 @@ public class MySQLConfig {
         return sessionFactoryBean;
     }
 
-
-//    @Bean
-//    public HibernateTransactionManager transactionManager() {
-//        HibernateTransactionManager transactionManager =
-//                new HibernateTransactionManager();
-//        transactionManager.setSessionFactory(sessionFactory().getObject());
-//        return transactionManager;
-//    }
+    @Primary
     @Bean
-    public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory")EntityManagerFactory entityManagerFactory){
+    public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory")
+                                                                     EntityManagerFactory entityManagerFactory){
         return new JpaTransactionManager(entityManagerFactory);
     }
 }
