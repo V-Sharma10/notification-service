@@ -1,5 +1,6 @@
 package com.notif.service.notif.services.redisService;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,8 @@ public class RedisServiceImpl implements RedisService{
     @Autowired
     private RedisTemplate redisTemplate;
 
-    private static final String KEY = "BLACKLIST";
+    @Value("${redis.set}")
+    private String KEY;
 
     @Override
     public String addToBlacklist(String phoneNumber) {
