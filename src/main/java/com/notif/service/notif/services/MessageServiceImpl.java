@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.notif.service.notif.utils.Validator.isValidIndianMobileNumber;
@@ -101,5 +102,10 @@ public class MessageServiceImpl implements MessageService{
             }
 
             return id;
+    }
+
+    @Override
+    public Optional<MessageDtoModel> getDetailsById(String id) {
+        return messageDBRepository.findById(id);
     }
 }
