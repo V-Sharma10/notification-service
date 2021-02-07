@@ -8,6 +8,8 @@ import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.models.response.Success;
 import com.notif.service.notif.services.MessageService;
 import com.notif.service.notif.utils.ErrorCodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +24,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("v1/sms")
 public class MessageController {
-
+    Logger logger = LoggerFactory.getLogger(MessageController.class);
     @Autowired
     MessageService messageService;
 
     @GetMapping("/{id}")
     public Optional<MessageDtoModel> getById(@PathVariable String id){
+        logger.info("getById where id = "+id);
         try{
             if(!messageService.getDetailsById(id).isPresent()){
                 throw new NotFoundException("No message with the given id found",ErrorCodes.NOT_FOUND_ERROR);
@@ -41,6 +44,7 @@ public class MessageController {
 
     @PostMapping("send")
     public ResponseEntity sendMessage(@RequestBody @Valid MessageRequestModel message){
+        logger.info("sendMessage method called");
         try{
             String id = messageService.sendMsg(message);
             Success returnValue = new Success(id,"Successfully Sent.");

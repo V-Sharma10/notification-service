@@ -1,5 +1,6 @@
 package com.notif.service.notif.services;
 
+import com.notif.service.notif.controllers.MessageController;
 import com.notif.service.notif.exception.InvalidRequestException;
 import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
@@ -10,6 +11,8 @@ import com.notif.service.notif.repositories.MessageDBRepository;
 import com.notif.service.notif.repositories.MessageESRepository;
 import com.notif.service.notif.services.redisService.RedisService;
 import com.notif.service.notif.utils.ErrorCodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +26,7 @@ import org.apache.commons.beanutils.BeanUtils;
 
 @Service
 public class MessageServiceImpl implements MessageService{
-
+    Logger logger = LoggerFactory.getLogger(MessageController.class);
     @Autowired
     private MessageDBRepository messageDBRepository;
 
@@ -40,14 +43,18 @@ public class MessageServiceImpl implements MessageService{
     public String sendMsg(MessageRequestModel message)
             throws InvalidRequestException, NotFoundException, ServiceUnavailableException {
              /** Checking if number is valid **/
+        logger.info("Checking if number is valid");
             if(!isValidIndianMobileNumber(message.getPhoneNumber()) ){
+                logger.error("Invalid Phone Number");
                 throw new InvalidRequestException("Invalid Phone Number", ErrorCodes.BAD_REQUEST_ERROR);
             }
             /** Checking if message is valid **/
+        logger.info("Checking if message is valid");
             if(!isValidMessage(message.getMessage())){
                 throw new InvalidRequestException("Invalid Message. Must be greater than 5 characters", ErrorCodes.BAD_REQUEST_ERROR);
             }
              /** Checking if number is blacklisted **/
+        logger.info("Checking if number is blacklisted");
             if(redisService.checkIfExist(message.getPhoneNumber())){
                 throw new InvalidRequestException("Number is Blacklisted", ErrorCodes.BAD_REQUEST_ERROR);
             }
@@ -66,6 +73,7 @@ public class MessageServiceImpl implements MessageService{
             msgDto.setId(id);msgDto.setStatus("queued");
 
             /** Getting added to DB **/
+            logger.info("Getting added to DB");
             try{
                 messageDBRepository.save(msgDto);
             } catch (Exception ex){
@@ -95,12 +103,13 @@ public class MessageServiceImpl implements MessageService{
             }
 
             /** Getting added to ES **/
+            logger.info("Getting added to ES");
             try{
                 messageESRepository.save(msgES);
             }catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
-
+        logger.info("Successfully Sent");
             return id;
     }
 
