@@ -12,9 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchByDateModel {
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private Date startDate;
+//    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    private String startDate;
 
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private Date endDate;
+//    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+    private String endDate;
 }

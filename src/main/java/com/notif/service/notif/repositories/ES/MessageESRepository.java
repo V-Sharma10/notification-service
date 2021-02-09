@@ -16,5 +16,5 @@ public interface MessageESRepository extends ElasticsearchRepository<MessageESMo
 //    epoch
     Page<MessageESModel> findAllByCreatedAtBetween(long start, long end, Pageable pageable);
     Optional<MessageESModel> findById(String id);
-
+    Page<MessageESModel> findByMessageContaining(String text,Pageable pageable);
 }
