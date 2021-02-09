@@ -19,7 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "sms_request_new")
+@Table(name = "sms_request")
 public class MessageDtoModel implements Serializable {
 
     @Id
@@ -38,7 +38,7 @@ public class MessageDtoModel implements Serializable {
     private String message;
 
     @Column(nullable = false)
-    private String status;
+    private int status;
 
     private int failureCode;
 

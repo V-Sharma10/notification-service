@@ -10,6 +10,11 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
 @Configuration
 public class ElasticSearchConfig {
+
+/**
+ *  index builder bean to add
+ **/
+
     @Bean
     public RestHighLevelClient elasticsearchClient() {
 

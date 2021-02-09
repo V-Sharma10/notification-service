@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -22,10 +19,11 @@ public class MessageESModel implements Serializable {
     private String id;
     private String phoneNumber;
     private String message;
-    private String status;
-//    private int failureCode;
-//    private String failureComment;
+    private int status;
+    private int failureCode;
+    private String failureComment;
+
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date createdAt;
-//    private Date updatedAt;
+    private Date updatedAt;
 }

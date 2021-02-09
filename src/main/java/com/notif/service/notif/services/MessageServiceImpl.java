@@ -7,10 +7,12 @@ import com.notif.service.notif.exception.ServiceUnavailableException;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.MessageESModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
-import com.notif.service.notif.repositories.MessageDBRepository;
-import com.notif.service.notif.repositories.MessageESRepository;
+import com.notif.service.notif.repositories.DB.MessageDBRepository;
+import com.notif.service.notif.repositories.ES.MessageESRepository;
+import com.notif.service.notif.services.kafkaService.KafkaProducerServiceImpl;
 import com.notif.service.notif.services.redisService.RedisService;
 import com.notif.service.notif.utils.ErrorCodes;
+import com.notif.service.notif.utils.StatusEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,18 +33,15 @@ public class MessageServiceImpl implements MessageService{
     private MessageDBRepository messageDBRepository;
 
     @Autowired
-    private MessageESRepository messageESRepository;
-
-    @Autowired
-    RedisService redisService;
+    private KafkaProducerServiceImpl kafkaProducerService;
 
     MessageDtoModel msgDto  = new MessageDtoModel();
-    MessageESModel msgES = new MessageESModel();
 
     @Override
     public String sendMsg(MessageRequestModel message)
             throws InvalidRequestException, NotFoundException, ServiceUnavailableException {
              /** Checking if number is valid **/
+//             service for validators
         logger.info("Checking if number is valid");
             if(!isValidIndianMobileNumber(message.getPhoneNumber()) ){
                 logger.error("Invalid Phone Number");
@@ -52,11 +51,6 @@ public class MessageServiceImpl implements MessageService{
         logger.info("Checking if message is valid");
             if(!isValidMessage(message.getMessage())){
                 throw new InvalidRequestException("Invalid Message. Must be greater than 5 characters", ErrorCodes.BAD_REQUEST_ERROR);
-            }
-             /** Checking if number is blacklisted **/
-        logger.info("Checking if number is blacklisted");
-            if(redisService.checkIfExist(message.getPhoneNumber())){
-                throw new InvalidRequestException("Number is Blacklisted", ErrorCodes.BAD_REQUEST_ERROR);
             }
 
             /** copied MessageRequestModel(message) to MessageDtoModel(msgDto) **/
@@ -70,45 +64,28 @@ public class MessageServiceImpl implements MessageService{
 
              /** Updating Value before adding to DB **/
             String id = UUID.randomUUID().toString();
-            msgDto.setId(id);msgDto.setStatus("queued");
+            msgDto.setId(id);msgDto.setStatus(StatusEnums.QUEUED.getCode());
 
             /** Getting added to DB **/
             logger.info("Getting added to DB");
             try{
                 messageDBRepository.save(msgDto);
+
             } catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
 
 
 
-
-
-            /**
-             * Once the message is sent over to kafka it means, it has been successfully sent.
-             *
-             * **/
-
-
-
-
-
-             /** copied MessageDtoModel(msgDto) to MessageESModel(msgES) **/
-            try {
-                BeanUtils.copyProperties(msgES, msgDto);
-            } catch (IllegalAccessException e) {
-                throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-            } catch (InvocationTargetException e) {
-                throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-            }
-
-            /** Getting added to ES **/
-            logger.info("Getting added to ES");
             try{
-                messageESRepository.save(msgES);
+                kafkaProducerService.sendMessage(id);
             }catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
+
+
+
+
         logger.info("Successfully Sent");
             return id;
     }
