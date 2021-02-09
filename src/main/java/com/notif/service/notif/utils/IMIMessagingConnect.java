@@ -26,8 +26,8 @@ public class IMIMessagingConnect {
                 .build();
             ExternalSmsRequest smsRequest = sendBuilder.buildMsgToSend(id,phoneNumber,msg);
             System.out.println(smsRequest);
-//        ExternalSmsResponse response = restTemplate.postForObject(url,smsRequest,ExternalSmsResponse.class);
-//        System.out.println(response);
+        ExternalSmsResponse response = restTemplate.postForObject(url,smsRequest,ExternalSmsResponse.class);
+        System.out.println(response);
     return null;
     }
 }

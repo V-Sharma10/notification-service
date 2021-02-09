@@ -1,0 +1,26 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="NotifApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="notification-service" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.notif.service.notif.NotifApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <envs>
+      <env name="server_port" value="8080" />
+      <env name="sql_driver" value="com.mysql.cj.jdbc.Driver" />
+      <env name="sql_db_url" value="jdbc:mysql://localhost:3306/notif_service" />
+      <env name="sql_db_username" value="root" />
+      <env name="sql_db_password" value="Vivek@1610" />
+      <env name="hibernate_ddl_auto" value="update" />
+      <env name="pkg_to_scan" value="com.notif.service.notif.*" />
+      <env name="redis_set" value="BLACKLIST" />
+      <env name="kafka_bootstrap_address" value="localhost:9092" />
+      <env name="kafka_topic" value="sms_request" />
+      <env name="kafka_groupid" value="msg_grp" />
+      <env name="imiconnect_api_key" value="93ceffda-5941-11ea-9da9-025282c394f2" />
+      <env name="kafka_autostart" value="false" />
+      <env name="imiconnect_url" value="https://api.imiconnect.in/resources/v1/messaging" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
