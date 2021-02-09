@@ -1,15 +1,16 @@
 package com.notif.service.notif.services.kafkaService;
 
-import com.notif.service.notif.controllers.MessageController;
 import com.notif.service.notif.exception.InvalidRequestException;
 import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.MessageESModel;
+import com.notif.service.notif.models.request.imiconnect.ExternalSmsRequest;
 import com.notif.service.notif.repositories.DB.MessageDBRepository;
 import com.notif.service.notif.repositories.ES.MessageESRepository;
 import com.notif.service.notif.services.redisService.RedisService;
 import com.notif.service.notif.utils.ErrorCodes;
+import com.notif.service.notif.utils.IMIMessagingConnect;
 import com.notif.service.notif.utils.StatusEnums;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -35,6 +36,9 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
     @Autowired
     RedisService redisService;
 
+    @Autowired
+    IMIMessagingConnect messagingConnect;
+
 
     MessageESModel msgES = new MessageESModel();
     @KafkaListener(topics = "${kafka.topic}",groupId = "${kafka.groupid}",autoStartup = "${kafka_autostart}")
@@ -51,12 +55,16 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
             msgDtoConsumer.setFailureCode(420);
             msgDtoConsumer.setFailureComments("Blacklisted Number.");
             msgDtoConsumer.setStatus(StatusEnums.FAILED.getCode());
+            messageDBRepository.save(msgDtoConsumer);
+            throw new InvalidRequestException("Failed. Blacklisted Number.",ErrorCodes.BAD_REQUEST_ERROR);
         }
 
 
+        /**
+         * Instantiate External API Object.
+         **/
 
-
-
+        messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),msgDtoConsumer.getPhoneNumber(),msgDtoConsumer.getMessage());
 
 
 

@@ -23,7 +23,7 @@ public class MessageESModel implements Serializable {
     private int failureCode;
     private String failureComment;
 
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
+//    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private Date createdAt;
     private Date updatedAt;
 }

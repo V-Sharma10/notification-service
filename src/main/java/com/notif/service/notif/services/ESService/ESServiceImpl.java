@@ -11,6 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -33,13 +36,22 @@ public class ESServiceImpl implements ESService{
     @Override
     public Page<MessageESModel> getMsgBetweenDates(SearchByDateModel dateModel) {
         logger.info("getMsgBetweenDates method invoked");
-        Pageable firstPageWithFiveElements = PageRequest.of(0, 5);
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return messageESRepository
-                .findByCreatedAtAfterAndCreatedAtBefore(
-                        dateModel.getStartDate(),
-                       dateModel.getEndDate(),
-                        firstPageWithFiveElements);
-//        return messageESRepository.customRandomFunction(dateModel.getStartDate(),dateModel.getEndDate());
-    }
+        System.out.println(dateModel.getStartDate().toString());
+        System.out.println(dateModel.getEndDate().toString());
+        LocalDateTime localStartDateTime = LocalDateTime.parse(dateModel.getStartDate().toString(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss") );
+        LocalDateTime localEndDateTime = LocalDateTime.parse(dateModel.getEndDate().toString(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss") );
+        long startMillis = localStartDateTime
+                .atZone(ZoneId.systemDefault())
+                .toInstant().toEpochMilli();
+        long endMillis = localEndDateTime
+                .atZone(ZoneId.systemDefault())
+                .toInstant().toEpochMilli();
+        Page<MessageESModel> page = messageESRepository
+                .findAllByCreatedAtBetween( startMillis,
+                        endMillis, PageRequest.of(0, 2));
+        logger.info("Page result : {}", page.get() );
+        return page;
+      }
 }

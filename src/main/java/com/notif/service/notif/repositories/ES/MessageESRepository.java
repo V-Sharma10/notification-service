@@ -14,10 +14,7 @@ public interface MessageESRepository extends ElasticsearchRepository<MessageESMo
 //    @Query(" \"query\": {\"range\": {\"createdAt\": {\"gte\": 10,\"lt\": } }}")
 
 //    epoch
-    Page<MessageESModel> findByCreatedAtAfterAndCreatedAtBefore(Date startDate,
-                                                                   Date endDate,
-                                                                   Pageable pageable);
-
+    Page<MessageESModel> findAllByCreatedAtBetween(long start, long end, Pageable pageable);
     Optional<MessageESModel> findById(String id);
 
 }
