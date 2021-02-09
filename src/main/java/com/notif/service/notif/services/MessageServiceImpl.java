@@ -75,16 +75,11 @@ public class MessageServiceImpl implements MessageService{
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
 
-
-
             try{
                 kafkaProducerService.sendMessage(id);
             }catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
-
-
-
 
         logger.info("Successfully Sent");
             return id;

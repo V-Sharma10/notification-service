@@ -20,6 +20,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 
 
 @Service
@@ -48,26 +49,33 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
         MessageDtoModel msgDtoConsumer= messageDBRepository.findById(message).orElse(null);
 
         if(msgDtoConsumer==null){
-            throw new ServiceUnavailableException("Cannot find the message in DB.",ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
+            throw new ServiceUnavailableException("Cannot find the message in DB.",
+                    ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
 
         if(redisService.checkIfExist(msgDtoConsumer.getPhoneNumber())){
-            msgDtoConsumer.setFailureCode(420);
+            msgDtoConsumer.setUpdatedAt(new Date());
+            msgDtoConsumer.setFailureCode(ErrorCodes.BAD_REQUEST_ERROR.getCode());
             msgDtoConsumer.setFailureComments("Blacklisted Number.");
             msgDtoConsumer.setStatus(StatusEnums.FAILED.getCode());
             messageDBRepository.save(msgDtoConsumer);
             throw new InvalidRequestException("Failed. Blacklisted Number.",ErrorCodes.BAD_REQUEST_ERROR);
         }
 
-
         /**
          * Instantiate External API Object.
          **/
+        try{
+            messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),
+                    msgDtoConsumer.getPhoneNumber(),
+                    msgDtoConsumer.getMessage());
 
-        messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),msgDtoConsumer.getPhoneNumber(),msgDtoConsumer.getMessage());
-
-
-
+            msgDtoConsumer.setUpdatedAt(new Date());
+            msgDtoConsumer.setStatus(StatusEnums.SUCCESS.getCode());
+            messageDBRepository.save(msgDtoConsumer);
+        }catch(Exception ex){
+            throw new ServiceUnavailableException("3rd party API failed",ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
+        }
 
         /** Getting added to ES **/
         logger.info("Getting added to ES");
@@ -80,7 +88,6 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
         } catch (InvocationTargetException e) {
             throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
-
 
         try{
             messageESRepository.save(msgES);
