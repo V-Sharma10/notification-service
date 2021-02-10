@@ -5,12 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.Optional;
-
-public interface MessageESRepository extends ElasticsearchRepository<MessageESModel,String>,
-        CustomMessageESRepository {
+@Repository
+public interface MessageESRepository extends ElasticsearchRepository<MessageESModel,String> {
 //    @Query(" \"query\": {\"range\": {\"createdAt\": {\"gte\": 10,\"lt\": } }}")
 
 //    epoch

@@ -1,7 +1,9 @@
 package com.notif.service.notif.services.redisService;
 
-import java.util.Set;
+import org.springframework.stereotype.Service;
 
+import java.util.Set;
+@Service
 public interface RedisService {
     //    Add a phone_number to blacklist
     String addToBlacklist(String phoneNumber);

@@ -1,12 +1,13 @@
 package com.notif.service.notif.utils;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Component
+@Service
 public class Helpers {
     public long dateStringToEpoch(String dateString){
 

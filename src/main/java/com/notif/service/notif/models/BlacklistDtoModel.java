@@ -16,7 +16,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "blacklist")
 public class BlacklistDtoModel {
-
     @Id
     private int sno;
 

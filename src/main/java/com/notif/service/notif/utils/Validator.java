@@ -1,8 +1,11 @@
 package com.notif.service.notif.utils;
 
+import org.springframework.stereotype.Service;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Service
 public class Validator {
     public static boolean isValidIndianMobileNumber(String s)
     {
