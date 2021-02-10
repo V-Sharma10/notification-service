@@ -6,7 +6,7 @@ import com.notif.service.notif.exception.ServiceUnavailableException;
 import com.notif.service.notif.models.MessageESModel;
 import com.notif.service.notif.models.request.SearchByDateModel;
 import com.notif.service.notif.services.ESService.ESService;
-import com.notif.service.notif.utils.ErrorCodes;
+import com.notif.service.notif.utils.enums.ErrorCodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;

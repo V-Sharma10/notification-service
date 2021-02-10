@@ -1,4 +1,4 @@
-package com.notif.service.notif.utils;
+package com.notif.service.notif.utils.enums;
 
 public enum StatusEnums {
     QUEUED(3),

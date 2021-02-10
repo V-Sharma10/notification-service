@@ -1,6 +1,5 @@
 package com.notif.service.notif.models.response;
 
-import com.notif.service.notif.utils.ErrorCodes;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

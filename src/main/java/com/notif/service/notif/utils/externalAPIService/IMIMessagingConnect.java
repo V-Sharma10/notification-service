@@ -1,4 +1,4 @@
-package com.notif.service.notif.utils.externalSmsApi;
+package com.notif.service.notif.utils.externalAPIService;
 
 import com.notif.service.notif.models.request.imiconnect.ExternalSmsRequest;
 import com.notif.service.notif.models.response.ExternalSmsResponse;
@@ -32,5 +32,3 @@ public class IMIMessagingConnect {
     }
 }
 
-
-//@SpringRetry

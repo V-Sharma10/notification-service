@@ -1,6 +1,6 @@
 package com.notif.service.notif.exception;
 
-import com.notif.service.notif.utils.ErrorCodes;
+import com.notif.service.notif.utils.enums.ErrorCodes;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

@@ -7,7 +7,7 @@ import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.models.response.Success;
 import com.notif.service.notif.services.MessageService;
-import com.notif.service.notif.utils.ErrorCodes;
+import com.notif.service.notif.utils.enums.ErrorCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
