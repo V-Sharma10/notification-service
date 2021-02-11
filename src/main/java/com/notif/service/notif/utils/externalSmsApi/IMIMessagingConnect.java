@@ -1,7 +1,9 @@
 package com.notif.service.notif.utils.externalSmsApi;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notif.service.notif.models.request.imiconnect.ExternalSmsRequest;
+import com.notif.service.notif.models.response.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -9,16 +11,18 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+
 @Service
 public class IMIMessagingConnect {
     @Value("${imiconnect_url}")
     private String url;
-//    @Value("${imiconnect_api_key}")
-    private String key="";
+    @Value("${imiconnect_api_key}")
+    private String key;
     @Autowired
     MessageToSendBuilder sendBuilder;
 
-    public String thirdPartyCall(String id, String phoneNumber, String msg) {
+    public String thirdPartyCall(String id, String phoneNumber, String msg) throws IOException {
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .rootUri(url)
                 .defaultHeader("key",key)
@@ -27,12 +31,17 @@ public class IMIMessagingConnect {
         ExternalSmsRequest smsRequest = sendBuilder.buildMsgToSend(id,phoneNumber,msg);
 
         String response = restTemplate.postForObject(url,smsRequest,String.class);
-        System.out.println(response);
-
         ObjectMapper mapper = new ObjectMapper();
-    return null;
+        JsonNode rootNode = mapper.readTree(response);
+        JsonNode responseNode = rootNode.path("response");
+        JsonNode transid = rootNode.at("/response/transid");
+
+        if(transid.toString().length()>0){
+            return mapper.treeToValue(responseNode,Response.class).toString();
+        }else{
+            return responseNode.get(0).toString();
+        }
+
     }
 }
 
-
-//@SpringRetry

@@ -33,7 +33,7 @@ public class ESServiceImpl implements ESService{
 
     @Override
     public Page<MessageESModel> getByText(String text) {
-        return messageESRepository.findByMessageContaining(text,PageRequest.of(0, 2));
+        return messageESRepository.findByMessageContaining(text,PageRequest.of(1, 2));
     }
 
     @Override

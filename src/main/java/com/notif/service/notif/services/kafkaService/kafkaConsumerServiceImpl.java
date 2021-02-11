@@ -68,13 +68,14 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
              String response = messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),
                 msgDtoConsumer.getPhoneNumber(),
                 msgDtoConsumer.getMessage());
+
               logger.info(response);
 
             msgDtoConsumer.setUpdatedAt(new Date());
             msgDtoConsumer.setStatus(StatusEnums.SUCCESS.getCode());
             messageDBRepository.save(msgDtoConsumer);
         }catch(Exception ex){
-            throw new ServiceUnavailableException("3rd party API failed",ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
+            throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
 
         /** Getting added to ES **/
