@@ -6,10 +6,11 @@ import com.notif.service.notif.exception.ServiceUnavailableException;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public interface MessageService {
-    String sendMsg(MessageRequestModel message) throws InvalidRequestException, NotFoundException, ServiceUnavailableException;
+    String sendMsg(MessageRequestModel message) throws InvalidRequestException, NotFoundException, ServiceUnavailableException, InvocationTargetException, IllegalAccessException;
     Optional<MessageDtoModel> getDetailsById(String id);
 
 }

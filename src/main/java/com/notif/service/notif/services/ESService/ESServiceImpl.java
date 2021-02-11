@@ -3,7 +3,7 @@ package com.notif.service.notif.services.ESService;
 import com.notif.service.notif.models.MessageESModel;
 import com.notif.service.notif.models.request.SearchByDateModel;
 import com.notif.service.notif.repositories.ES.MessageESRepository;
-import com.notif.service.notif.utils.Helpers;
+import com.notif.service.notif.utils.HelperUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class ESServiceImpl implements ESService{
     MessageESRepository messageESRepository;
 
     @Autowired
-    Helpers helpers;
+    HelperUtils helperUtils;
 
     @Override
     public Optional<MessageESModel> getById(String id) {
@@ -40,8 +40,8 @@ public class ESServiceImpl implements ESService{
     public Page<MessageESModel> getMsgBetweenDates(SearchByDateModel dateModel) {
         logger.info("getMsgBetweenDates method invoked");
 
-        long startEpoch = helpers.dateStringToEpoch(dateModel.getStartDate());
-        long endEpoch = helpers.dateStringToEpoch(dateModel.getEndDate());
+        long startEpoch = helperUtils.dateStringToEpoch(dateModel.getStartDate());
+        long endEpoch = helperUtils.dateStringToEpoch(dateModel.getEndDate());
 
         Page<MessageESModel> page = messageESRepository
                 .findAllByCreatedAtBetween( startEpoch,

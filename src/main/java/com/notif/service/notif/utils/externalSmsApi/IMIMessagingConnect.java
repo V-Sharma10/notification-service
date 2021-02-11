@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 public class IMIMessagingConnect {
     @Value("${imiconnect_url}")
     private String url;
-    @Value("${imiconnect_api_key}")
+//    @Value("${imiconnect_api_key}")
     private String key;
     @Autowired
     MessageToSendBuilder sendBuilder;

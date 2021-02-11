@@ -8,6 +8,7 @@ import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.models.response.Success;
 import com.notif.service.notif.services.MessageService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
+import com.notif.service.notif.utils.enums.SuccessEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 
@@ -47,7 +49,7 @@ public class MessageController {
         logger.info("sendMessage method called");
         try{
             String id = messageService.sendMsg(message);
-            Success returnValue = new Success(id,"Request Submitted.");
+            Success returnValue = new Success(id, SuccessEnums.SUBMISSION_SUCCESS.getMessage());
             return new ResponseEntity(returnValue, HttpStatus.OK);
         }
         catch (NotFoundException ex) {
@@ -59,7 +61,9 @@ public class MessageController {
         catch (ServiceUnavailableException ex) {
             throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
-
+        catch (InvocationTargetException ex){ }
+        catch (IllegalAccessException ex){ }
+    return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE);
     }
 }
 

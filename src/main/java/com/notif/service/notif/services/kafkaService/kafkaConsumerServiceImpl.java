@@ -7,9 +7,10 @@ import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.MessageESModel;
 import com.notif.service.notif.repositories.DB.MessageDBRepository;
 import com.notif.service.notif.repositories.ES.MessageESRepository;
+import com.notif.service.notif.services.HelperService;
 import com.notif.service.notif.services.redisService.RedisService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
-import com.notif.service.notif.utils.enums.StatusEnums;
+import com.notif.service.notif.utils.enums.FailureEnums;
 import com.notif.service.notif.utils.externalSmsApi.IMIMessagingConnect;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 
 
 @Service
@@ -34,62 +34,45 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
     private MessageESRepository messageESRepository;
 
     @Autowired
-    RedisService redisService;
+    private RedisService redisService;
 
     @Autowired
-    IMIMessagingConnect messagingConnect;
+    private IMIMessagingConnect messagingConnect;
 
+    @Autowired
+    private HelperService helperService;
 
     MessageESModel msgES = new MessageESModel();
+
     @KafkaListener(topics = "${kafka.topic}",groupId = "${kafka.groupid}",autoStartup = "${kafka_autostart}")
     @Override
-    public void listener(String message) throws InvalidRequestException,ServiceUnavailableException, NotFoundException {
+    public void listener(String message) throws InvalidRequestException, ServiceUnavailableException, NotFoundException, InvocationTargetException, IllegalAccessException {
         System.out.println("Received Message in group foo: " + message);
         MessageDtoModel msgDtoConsumer= messageDBRepository.findById(message).orElse(null);
 
         if(msgDtoConsumer==null){
-            throw new ServiceUnavailableException("Cannot find the message in DB.",
-                    ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
+            throw new ServiceUnavailableException(FailureEnums.CANT_FIND.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
 
         if(redisService.checkIfExist(msgDtoConsumer.getPhoneNumber())){
-            msgDtoConsumer.setUpdatedAt(new Date());
-            msgDtoConsumer.setFailureCode(ErrorCodes.BAD_REQUEST_ERROR.getCode());
-            msgDtoConsumer.setFailureComments("Blacklisted Number.");
-            msgDtoConsumer.setStatus(StatusEnums.FAILED.getCode());
+            helperService.sendingFailed(msgDtoConsumer);
             messageDBRepository.save(msgDtoConsumer);
-            throw new InvalidRequestException("Failed. Blacklisted Number.",ErrorCodes.BAD_REQUEST_ERROR);
+            throw new InvalidRequestException(FailureEnums.BLACKLIST.getMessage(), ErrorCodes.BAD_REQUEST_ERROR);
         }
 
-        /**
-         * Instantiate External API Object.
-         **/
         try{
              String response = messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),
-                msgDtoConsumer.getPhoneNumber(),
-                msgDtoConsumer.getMessage());
-
+                     msgDtoConsumer.getPhoneNumber(), msgDtoConsumer.getMessage());
              logger.info(response);
-            msgDtoConsumer.setUpdatedAt(new Date());
-            msgDtoConsumer.setThirdPartyResponse(response);
-            msgDtoConsumer.setStatus(StatusEnums.SUCCESS.getCode());
-            messageDBRepository.save(msgDtoConsumer);
+             helperService.sendingSuccess(msgDtoConsumer,response);
+             messageDBRepository.save(msgDtoConsumer);
         }catch(Exception ex){
             throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
 
-        /** Getting added to ES **/
         logger.info("Getting added to ES");
 
-        /** copied MessageDtoModel(msgDto) to MessageESModel(msgES) **/
-        try {
             BeanUtils.copyProperties(msgES, msgDtoConsumer);
-        } catch (IllegalAccessException e) {
-            throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-        } catch (InvocationTargetException e) {
-            throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-        }
-
         try{
             messageESRepository.save(msgES);
         }catch (Exception ex){

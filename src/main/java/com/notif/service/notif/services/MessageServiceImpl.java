@@ -4,7 +4,7 @@ import com.notif.service.notif.controllers.MessageController;
 import com.notif.service.notif.exception.InvalidRequestException;
 import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
-import com.notif.service.notif.middleware.MessageRequestValidator;
+import com.notif.service.notif.validators.MessageRequestValidator;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.repositories.DB.MessageDBRepository;
@@ -34,34 +34,18 @@ public class MessageServiceImpl implements MessageService{
     MessageRequestValidator validator = new MessageRequestValidator();
     @Override
     public String sendMsg(MessageRequestModel message)
-            throws InvalidRequestException, NotFoundException, ServiceUnavailableException {
+            throws InvalidRequestException, NotFoundException, ServiceUnavailableException, InvocationTargetException, IllegalAccessException {
 
-            if(!validator.main(message)){
-                throw new InvalidRequestException("Invalid Request Body",ErrorCodes.BAD_REQUEST_ERROR);
-            }
+             validator.main(message);
+             BeanUtils.copyProperties(msgDto, message);
 
-            /** copied MessageRequestModel(message) to MessageDtoModel(msgDto) **/
-            try {
-                BeanUtils.copyProperties(msgDto, message);
-            } catch (IllegalAccessException e) {
-                throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-            } catch (InvocationTargetException e) {
-                throw new ServiceUnavailableException(e.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-            }
-
-             /** Updating Value before adding to DB **/
             String id = UUID.randomUUID().toString();
-            msgDto.setId(id);msgDto.setStatus(StatusEnums.QUEUED.getCode());
+            msgDto.setId(id);
+            msgDto.setStatus(StatusEnums.QUEUED.getCode());
 
-            /** Getting added to DB **/
-            logger.info("Getting added to DB");
+            logger.info("Getting added to DB and Kafka");
             try{
                 messageDBRepository.save(msgDto);
-            } catch (Exception ex){
-                throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-            }
-
-            try{
                 kafkaProducerService.sendMessage(id);
             } catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);

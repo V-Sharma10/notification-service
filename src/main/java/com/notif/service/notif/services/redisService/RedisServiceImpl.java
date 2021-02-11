@@ -2,16 +2,13 @@ package com.notif.service.notif.services.redisService;
 
 import com.notif.service.notif.models.BlacklistDtoModel;
 import com.notif.service.notif.repositories.DB.BlacklistDBRepository;
-import org.springframework.beans.factory.annotation.Value;
+import com.notif.service.notif.validators.MessageRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
-
-import static com.notif.service.notif.utils.Validator.isValidIndianMobileNumber;
 
 @Service
 public class RedisServiceImpl implements RedisService{
@@ -21,13 +18,16 @@ public class RedisServiceImpl implements RedisService{
     @Autowired
     private BlacklistDBRepository blacklistDBRepository;
 
+    @Autowired
+    MessageRequestValidator messageRequestValidator;
+
     @Value("${redis.set}")
     private String KEY;
 
     @Override
     public String addToBlacklist(String phoneNumber) {
         try{
-            if(isValidIndianMobileNumber(phoneNumber) && !checkIfExist(phoneNumber) ) {
+            if(messageRequestValidator.phoneValidator(phoneNumber) && !checkIfExist(phoneNumber) ) {
                 redisTemplate.opsForSet().add(KEY, phoneNumber);
                 BlacklistDtoModel newNum = BlacklistDtoModel.builder()
                         .number(phoneNumber).build();
@@ -47,14 +47,8 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public String removeFromBlacklist(String phoneNumber) {
         try{
-            if(isValidIndianMobileNumber(phoneNumber)){
+            if(messageRequestValidator.phoneValidator(phoneNumber)){
                 redisTemplate.opsForSet().remove(KEY,phoneNumber);
-
-                /**
-                 * Remove the number from DB as well.
-                 **/
-
-
                 return "Number successfully removed from blacklist" ;
             }
             else{
@@ -75,7 +69,7 @@ public class RedisServiceImpl implements RedisService{
 
     @Override
     public boolean checkIfExist(String number) {
-        if(isValidIndianMobileNumber(number)) {
+        if(messageRequestValidator.phoneValidator(number)) {
             return redisTemplate.opsForSet().isMember(KEY, number);
 
         }

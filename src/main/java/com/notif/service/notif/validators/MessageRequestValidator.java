@@ -1,6 +1,8 @@
-package com.notif.service.notif.middleware;
+package com.notif.service.notif.validators;
 
+import com.notif.service.notif.exception.InvalidRequestException;
 import com.notif.service.notif.models.request.MessageRequestModel;
+import com.notif.service.notif.utils.enums.ErrorCodes;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
@@ -12,7 +14,6 @@ public class MessageRequestValidator {
 
     public MessageRequestValidator() {
     }
-
     public MessageRequestValidator(MessageRequestModel requestModel) {
         this.requestModel = requestModel;
     }
@@ -23,14 +24,17 @@ public class MessageRequestValidator {
         return (m.find() && m.group().equals(s));
     }
     public boolean messageValidator(String s){
-        if(s.length()>5){
-            return true;
-        }
+        if(s.length()>5){return true; }
         return false;
-
     }
-    public boolean main(MessageRequestModel message){
-     return phoneValidator(message.getPhoneNumber()) && messageValidator(message.getMessage());
+
+    public boolean main(MessageRequestModel message) throws InvalidRequestException {
+        if(!phoneValidator(message.getPhoneNumber())){
+            throw new InvalidRequestException("Invalid Phone Number", ErrorCodes.BAD_REQUEST_ERROR);
+        }else if(!messageValidator(message.getMessage())){
+            throw new InvalidRequestException("Invalid Message", ErrorCodes.BAD_REQUEST_ERROR);
+        }
+     return  true;
     }
 }
 

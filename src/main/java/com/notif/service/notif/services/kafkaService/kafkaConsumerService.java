@@ -1,5 +1,7 @@
 package com.notif.service.notif.services.kafkaService;
 
+import java.lang.reflect.InvocationTargetException;
+
 public interface kafkaConsumerService {
-    public void listener(String message);
+     void listener(String message) throws InvocationTargetException, IllegalAccessException;
 }
