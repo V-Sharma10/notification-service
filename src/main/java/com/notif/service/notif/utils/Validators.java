@@ -4,9 +4,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 @Service
-public class Validator {
-    public static boolean isValidIndianMobileNumber(String s)
+public class Validators {
+    public  boolean isValidIndianMobileNumber(String s)
     {
         Pattern p = Pattern.compile("^[6-9]\\d{9}$");
 
@@ -14,7 +15,7 @@ public class Validator {
         return (m.find() && m.group().equals(s));
     }
 
-    public static boolean isValidMessage(String s){
+    public  boolean isValidMessage(String s){
         if(s.length()>5){
             return true;
         }

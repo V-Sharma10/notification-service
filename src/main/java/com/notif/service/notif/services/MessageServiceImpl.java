@@ -10,6 +10,7 @@ import com.notif.service.notif.repositories.DB.MessageDBRepository;
 import com.notif.service.notif.services.kafkaService.KafkaProducerServiceImpl;
 import com.notif.service.notif.utils.enums.ErrorCodes;
 import com.notif.service.notif.utils.enums.StatusEnums;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import java.util.UUID;
 
 import static com.notif.service.notif.utils.Validator.isValidIndianMobileNumber;
 import static com.notif.service.notif.utils.Validator.isValidMessage;
-import org.apache.commons.beanutils.BeanUtils;
 
 @Service
 public class MessageServiceImpl implements MessageService{
@@ -78,7 +78,7 @@ public class MessageServiceImpl implements MessageService{
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
 
-        logger.info("Successfully Sent");
+        logger.info("Request Submitted");
             return id;
     }
 

@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ExternalSmsResponse {
+public class SuccessExternalSmsResponse {
 
-    private List<response> response;
+    private List<Response> response;
+
 }

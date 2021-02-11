@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Response {
-    private String code;
-    private String description;
-    private String transid;
+public class FailureExternalSmsResponse {
+
+    private Response errorResponse;
 }

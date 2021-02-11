@@ -5,13 +5,12 @@ import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.MessageESModel;
-import com.notif.service.notif.models.response.ExternalSmsResponse;
 import com.notif.service.notif.repositories.DB.MessageDBRepository;
 import com.notif.service.notif.repositories.ES.MessageESRepository;
 import com.notif.service.notif.services.redisService.RedisService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
-import com.notif.service.notif.utils.externalSmsApi.IMIMessagingConnect;
 import com.notif.service.notif.utils.enums.StatusEnums;
+import com.notif.service.notif.utils.externalSmsApi.IMIMessagingConnect;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,10 +65,11 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
          * Instantiate External API Object.
          **/
         try{
-           ExternalSmsResponse response = messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),
-                    msgDtoConsumer.getPhoneNumber(),
-                    msgDtoConsumer.getMessage());
-            logger.info(String.valueOf(response));
+             String response = messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),
+                msgDtoConsumer.getPhoneNumber(),
+                msgDtoConsumer.getMessage());
+              logger.info(response);
+
             msgDtoConsumer.setUpdatedAt(new Date());
             msgDtoConsumer.setStatus(StatusEnums.SUCCESS.getCode());
             messageDBRepository.save(msgDtoConsumer);
