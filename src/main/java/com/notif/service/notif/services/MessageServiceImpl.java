@@ -4,6 +4,7 @@ import com.notif.service.notif.controllers.MessageController;
 import com.notif.service.notif.exception.InvalidRequestException;
 import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
+import com.notif.service.notif.middleware.MessageRequestValidator;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.repositories.DB.MessageDBRepository;
@@ -20,9 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.notif.service.notif.utils.Validator.isValidIndianMobileNumber;
-import static com.notif.service.notif.utils.Validator.isValidMessage;
-
 @Service
 public class MessageServiceImpl implements MessageService{
     Logger logger = LoggerFactory.getLogger(MessageController.class);
@@ -33,21 +31,13 @@ public class MessageServiceImpl implements MessageService{
     private KafkaProducerServiceImpl kafkaProducerService;
 
     MessageDtoModel msgDto  = new MessageDtoModel();
-
+    MessageRequestValidator validator = new MessageRequestValidator();
     @Override
     public String sendMsg(MessageRequestModel message)
             throws InvalidRequestException, NotFoundException, ServiceUnavailableException {
-             /** Checking if number is valid **/
-//             service for validators
-        logger.info("Checking if number is valid");
-            if(!isValidIndianMobileNumber(message.getPhoneNumber()) ){
-                logger.error("Invalid Phone Number");
-                throw new InvalidRequestException("Invalid Phone Number", ErrorCodes.BAD_REQUEST_ERROR);
-            }
-            /** Checking if message is valid **/
-        logger.info("Checking if message is valid");
-            if(!isValidMessage(message.getMessage())){
-                throw new InvalidRequestException("Invalid Message. Must be greater than 5 characters", ErrorCodes.BAD_REQUEST_ERROR);
+
+            if(!validator.main(message)){
+                throw new InvalidRequestException("Invalid Request Body",ErrorCodes.BAD_REQUEST_ERROR);
             }
 
             /** copied MessageRequestModel(message) to MessageDtoModel(msgDto) **/
@@ -67,14 +57,13 @@ public class MessageServiceImpl implements MessageService{
             logger.info("Getting added to DB");
             try{
                 messageDBRepository.save(msgDto);
-
             } catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
 
             try{
                 kafkaProducerService.sendMessage(id);
-            }catch (Exception ex){
+            } catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
 

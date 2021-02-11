@@ -69,9 +69,9 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
                 msgDtoConsumer.getPhoneNumber(),
                 msgDtoConsumer.getMessage());
 
-              logger.info(response);
-
+             logger.info(response);
             msgDtoConsumer.setUpdatedAt(new Date());
+            msgDtoConsumer.setThirdPartyResponse(response);
             msgDtoConsumer.setStatus(StatusEnums.SUCCESS.getCode());
             messageDBRepository.save(msgDtoConsumer);
         }catch(Exception ex){

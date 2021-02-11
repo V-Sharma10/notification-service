@@ -47,4 +47,6 @@ public class MessageDtoModel implements Serializable {
 
     private Date updatedAt;
 
+    private String thirdPartyResponse;
+
 }

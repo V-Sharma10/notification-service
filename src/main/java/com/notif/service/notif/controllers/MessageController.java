@@ -47,7 +47,7 @@ public class MessageController {
         logger.info("sendMessage method called");
         try{
             String id = messageService.sendMsg(message);
-            Success returnValue = new Success(id,"Successfully Sent.");
+            Success returnValue = new Success(id,"Request Submitted.");
             return new ResponseEntity(returnValue, HttpStatus.OK);
         }
         catch (NotFoundException ex) {
