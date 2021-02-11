@@ -73,11 +73,11 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
         logger.info("Getting added to ES");
 
             BeanUtils.copyProperties(msgES, msgDtoConsumer);
-        try{
+         try{
             messageESRepository.save(msgES);
-        }catch (Exception ex){
+         }catch (Exception ex){
             throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
-        }
+         }
     }
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notif.service.notif.models.request.imiconnect.ExternalSmsRequest;
 import com.notif.service.notif.models.response.Response;
+import com.notif.service.notif.utils.enums.FailureEnums;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -43,7 +44,7 @@ public class IMIMessagingConnect {
             ex.printStackTrace();
         }
 
-    return "Failed to send the message: third party error";
+    return FailureEnums.THIRD_API_FAIL.getMessage();
     }
 }
 
