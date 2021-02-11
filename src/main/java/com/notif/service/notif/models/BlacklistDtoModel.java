@@ -5,19 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
+
 @Entity
 @Table(name = "blacklist")
 public class BlacklistDtoModel {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int sno;
-
     private String number;
 }

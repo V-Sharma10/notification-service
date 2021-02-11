@@ -10,7 +10,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Component
-public class KafkaProducerServiceImpl implements  kafkaProducerService {
+public class KafkaProducerServiceImpl implements kafkaProducerService {
     @Value("${kafka.topic}")
     private String TOPIC;
 

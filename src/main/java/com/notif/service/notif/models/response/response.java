@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ExternalSmsResponse {
-
-    private List<response> response;
+public class response {
+    private String code;
+    private String description;
+    private String transid;
 }

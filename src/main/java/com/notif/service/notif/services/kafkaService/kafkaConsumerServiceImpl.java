@@ -5,24 +5,24 @@ import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.MessageESModel;
+import com.notif.service.notif.models.response.ExternalSmsResponse;
 import com.notif.service.notif.repositories.DB.MessageDBRepository;
 import com.notif.service.notif.repositories.ES.MessageESRepository;
 import com.notif.service.notif.services.redisService.RedisService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
-import com.notif.service.notif.utils.externalAPIService.IMIMessagingConnect;
+import com.notif.service.notif.utils.externalSmsApi.IMIMessagingConnect;
 import com.notif.service.notif.utils.enums.StatusEnums;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
-@ComponentScan("com.notif.service.notif.*")
+
 @Service
 public class kafkaConsumerServiceImpl implements kafkaConsumerService{
 
@@ -35,7 +35,7 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
     private MessageESRepository messageESRepository;
 
     @Autowired
-    private RedisService redisService;
+    RedisService redisService;
 
     @Autowired
     IMIMessagingConnect messagingConnect;
@@ -66,10 +66,10 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
          * Instantiate External API Object.
          **/
         try{
-            messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),
+           ExternalSmsResponse response = messagingConnect.thirdPartyCall(msgDtoConsumer.getId(),
                     msgDtoConsumer.getPhoneNumber(),
                     msgDtoConsumer.getMessage());
-
+            logger.info(String.valueOf(response));
             msgDtoConsumer.setUpdatedAt(new Date());
             msgDtoConsumer.setStatus(StatusEnums.SUCCESS.getCode());
             messageDBRepository.save(msgDtoConsumer);

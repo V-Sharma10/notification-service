@@ -1,4 +1,4 @@
-package com.notif.service.notif.utils.externalAPIService;
+package com.notif.service.notif.utils.externalSmsApi;
 
 import com.notif.service.notif.models.request.imiconnect.Channels;
 import com.notif.service.notif.models.request.imiconnect.Destination;

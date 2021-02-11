@@ -1,4 +1,4 @@
-package com.notif.service.notif.utils.externalAPIService;
+package com.notif.service.notif.utils.externalSmsApi;
 
 import com.notif.service.notif.models.request.imiconnect.ExternalSmsRequest;
 import com.notif.service.notif.models.response.ExternalSmsResponse;
@@ -24,11 +24,20 @@ public class IMIMessagingConnect {
                 .defaultHeader("key",key)
                 .defaultHeader("Content-Type",MediaType.APPLICATION_JSON_VALUE)
                 .build();
-            ExternalSmsRequest smsRequest = sendBuilder.buildMsgToSend(id,phoneNumber,msg);
-            System.out.println(smsRequest);
-//        ExternalSmsResponse response = restTemplate.postForObject(url,smsRequest,ExternalSmsResponse.class);
-//        System.out.println(response);
+
+        ExternalSmsRequest smsRequest = sendBuilder.buildMsgToSend(id,phoneNumber,msg);
+        System.out.println(smsRequest);
+        try{
+
+        ExternalSmsResponse response = restTemplate.postForObject(url,smsRequest,ExternalSmsResponse.class);
+        return response;
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     return null;
     }
 }
 
+
+//@SpringRetry
