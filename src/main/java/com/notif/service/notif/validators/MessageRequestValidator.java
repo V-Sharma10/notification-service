@@ -3,6 +3,7 @@ package com.notif.service.notif.validators;
 import com.notif.service.notif.exception.InvalidRequestException;
 import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.utils.enums.ErrorCodes;
+import lombok.Builder;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;

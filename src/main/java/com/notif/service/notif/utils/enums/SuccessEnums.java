@@ -1,7 +1,7 @@
 package com.notif.service.notif.utils.enums;
 
 public enum SuccessEnums {
-    SUBMISSION_SUCCESS("Request Successfully Submitted.") ;
+    SUBMISSION_SUCCESS("Request Successfully Submitted."),SUCCESS("Success.") ;
 
     private String message;
 

@@ -4,6 +4,7 @@ import com.notif.service.notif.controllers.MessageController;
 import com.notif.service.notif.exception.InvalidRequestException;
 import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
+import com.notif.service.notif.utils.enums.SuccessEnums;
 import com.notif.service.notif.validators.MessageRequestValidator;
 import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
@@ -36,7 +37,7 @@ public class MessageServiceImpl implements MessageService{
     public String sendMsg(MessageRequestModel message)
             throws InvalidRequestException, NotFoundException, ServiceUnavailableException, InvocationTargetException, IllegalAccessException {
 
-             validator.main(message);
+            validator.main(message);
              BeanUtils.copyProperties(msgDto, message);
 
             String id = UUID.randomUUID().toString();
@@ -51,7 +52,7 @@ public class MessageServiceImpl implements MessageService{
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
 
-        logger.info("Request Submitted");
+        logger.info(SuccessEnums.SUBMISSION_SUCCESS.getMessage());
             return id;
     }
 

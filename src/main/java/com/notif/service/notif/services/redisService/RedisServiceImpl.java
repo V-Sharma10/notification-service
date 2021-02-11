@@ -2,6 +2,8 @@ package com.notif.service.notif.services.redisService;
 
 import com.notif.service.notif.models.BlacklistDtoModel;
 import com.notif.service.notif.repositories.DB.BlacklistDBRepository;
+import com.notif.service.notif.utils.enums.FailureEnums;
+import com.notif.service.notif.utils.enums.SuccessEnums;
 import com.notif.service.notif.validators.MessageRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,14 +35,14 @@ public class RedisServiceImpl implements RedisService{
                         .number(phoneNumber).build();
 
                 blacklistDBRepository.save(newNum);
-                return "Successfully Added";
+                return SuccessEnums.SUCCESS.getMessage();
             }
             else{
-                return "Either Phone Number is not Valid or it has already been blacklisted.";
+                return FailureEnums.REDIS_ADD_FAIL.getMessage();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "failed to add to the blacklist";
+            return FailureEnums.FAILED.getMessage();
         }
     }
 
@@ -49,17 +51,17 @@ public class RedisServiceImpl implements RedisService{
         try{
             if(messageRequestValidator.phoneValidator(phoneNumber)){
                 redisTemplate.opsForSet().remove(KEY,phoneNumber);
-                return "Number successfully removed from blacklist" ;
+                return SuccessEnums.SUCCESS.getMessage() ;
             }
             else{
-                return "Phone Number is not valid";
+                return FailureEnums.REDIS_ADD_FAIL.getMessage();
             }
 
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
-        return "Failed to remove from blacklist";
+        return FailureEnums.FAILED.getMessage();
     }
 
     @Override

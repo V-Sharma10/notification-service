@@ -8,6 +8,7 @@ import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.models.response.Success;
 import com.notif.service.notif.services.MessageService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
+import com.notif.service.notif.utils.enums.FailureEnums;
 import com.notif.service.notif.utils.enums.SuccessEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class MessageController {
         logger.info("getById where id = "+id);
         try{
             if(!messageService.getDetailsById(id).isPresent()){
-                throw new NotFoundException("No message with the given id found",ErrorCodes.NOT_FOUND_ERROR);
+                throw new NotFoundException(FailureEnums.CANT_FIND.getMessage(), ErrorCodes.NOT_FOUND_ERROR);
             }
             return messageService.getDetailsById(id);
         }
