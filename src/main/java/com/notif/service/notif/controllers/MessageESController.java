@@ -37,9 +37,13 @@ public class MessageESController {
             throw new ServiceUnavailableException(ex.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
     }
-    @PostMapping ("/phraseSearch")
-    public Page<MessageESModel> getSmsByText(@RequestBody SearchPhraseModel phrase){
-        return messageESService.getByText(phrase);
+    @PostMapping ("/text")
+    public Page<MessageESModel> getSmsByText(@RequestBody String text){
+        return messageESService.getByText(text);
+    }
+    @PostMapping ("phrase")
+    public Page<MessageESModel> getSmsByPhrase(@RequestBody SearchPhraseModel phrase){
+        return messageESService.getByPhrase(phrase);
     }
 
     //    Get all sms sent to phone number between given start and end time
