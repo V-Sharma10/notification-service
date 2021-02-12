@@ -38,6 +38,11 @@ public class ESServiceImpl implements ESService{
     }
 
     @Override
+    public Page<MessageESModel> getByPhrase(SearchPhraseModel phrase) {
+        return messageESRepository.getByPhrase(phrase);
+    }
+
+    @Override
     public Page<MessageESModel> getMsgBetweenDates(SearchByDateModel dateModel) {
         logger.info("getMsgBetweenDates method invoked");
 

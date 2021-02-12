@@ -1,10 +1,9 @@
 package com.notif.service.notif.repositories.ES;
 
 import com.notif.service.notif.models.MessageESModel;
-import org.springframework.data.elasticsearch.core.SearchHits;
-
-import java.util.Date;
+import com.notif.service.notif.models.request.SearchPhraseModel;
+import org.springframework.data.domain.Page;
 
 public interface CustomMessageESRepository {
-     SearchHits<MessageESModel> customRandomFunction(Date startDate, Date endDate);
+     Page<MessageESModel> getByPhrase(SearchPhraseModel phrase);
 }

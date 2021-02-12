@@ -11,5 +11,6 @@ public interface ESService {
     Optional<MessageESModel> getById(String id);
     Page<MessageESModel> getAll();
     Page<MessageESModel> getByText(SearchPhraseModel phrase);
+    Page<MessageESModel> getByPhrase(SearchPhraseModel phrase);
     Page<MessageESModel> getMsgBetweenDates(SearchByDateModel dateModel);
 }
