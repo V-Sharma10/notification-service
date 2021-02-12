@@ -5,6 +5,7 @@ import com.notif.service.notif.exception.NotFoundException;
 import com.notif.service.notif.exception.ServiceUnavailableException;
 import com.notif.service.notif.models.MessageESModel;
 import com.notif.service.notif.models.request.SearchByDateModel;
+import com.notif.service.notif.models.request.SearchPhraseModel;
 import com.notif.service.notif.services.ESService.ESService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,9 @@ public class MessageESController {
             throw new ServiceUnavailableException(ex.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
     }
-    @GetMapping("/textsearch/{text}")
-    public Page<MessageESModel> getSmsByText(@PathVariable String text){
-        return messageESService.getByText(text);
+    @PostMapping ("/phraseSearch")
+    public Page<MessageESModel> getSmsByText(@RequestBody SearchPhraseModel phrase){
+        return messageESService.getByText(phrase);
     }
 
     //    Get all sms sent to phone number between given start and end time

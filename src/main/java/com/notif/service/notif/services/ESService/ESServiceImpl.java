@@ -2,6 +2,7 @@ package com.notif.service.notif.services.ESService;
 
 import com.notif.service.notif.models.MessageESModel;
 import com.notif.service.notif.models.request.SearchByDateModel;
+import com.notif.service.notif.models.request.SearchPhraseModel;
 import com.notif.service.notif.repositories.ES.MessageESRepository;
 import com.notif.service.notif.utils.HelperUtils;
 import org.slf4j.Logger;
@@ -32,8 +33,8 @@ public class ESServiceImpl implements ESService{
     }
 
     @Override
-    public Page<MessageESModel> getByText(String text) {
-        return messageESRepository.findByMessageContaining(text,PageRequest.of(1, 2));
+    public Page<MessageESModel> getByText(SearchPhraseModel phrase) {
+        return messageESRepository.findByMessageContaining(phrase.getPhrase(),PageRequest.of(1, 2));
     }
 
     @Override
