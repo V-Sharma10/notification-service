@@ -17,15 +17,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomMessageESRepositoryImpl implements CustomMessageESRepository{
-    Logger logger = LoggerFactory.getLogger(CustomMessageESRepository.class);
+
+        Logger logger = LoggerFactory.getLogger(CustomMessageESRepository.class);
+
+
     @Autowired
     ElasticsearchOperations elasticsearchOps;
 
     @Override
     public Page<MessageESModel> getByPhrase(SearchPhraseModel phrase) {
-       System.out.println(phrase.getPage()+" "+ phrase.getSize()+" "+ phrase.getPhrase());
+        logger.isTraceEnabled();
+//       System.out.println(phrase.getPage()+" "+ phrase.getSize()+" "+ phrase.getPhrase());
       String search = ".*"+phrase.getPhrase()+".*";
-
+    logger.trace("searched for phrase: {} from {} page and {} size",phrase.getPhrase(),phrase.getPage(),phrase.getSize());
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.multiMatchQuery(search).field("message")
                         .type(MultiMatchQueryBuilder.DEFAULT_TYPE))
@@ -33,6 +37,7 @@ public class CustomMessageESRepositoryImpl implements CustomMessageESRepository{
 
          SearchHits<MessageESModel> pageHits =  elasticsearchOps.search(searchQuery,MessageESModel.class);
 
+         System.out.println(pageHits);
 
 
 //

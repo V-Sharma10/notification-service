@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ESService {
     Optional<MessageESModel> getById(String id);
     Page<MessageESModel> getAll();
-    Page<MessageESModel> getByText(String text);
+    Page<MessageESModel> getByText(String text, int page, int size);
     Page<MessageESModel> getByPhrase(SearchPhraseModel phrase);
     Page<MessageESModel> getMsgBetweenDates(SearchByDateModel dateModel);
 }

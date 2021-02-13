@@ -37,9 +37,9 @@ public class MessageESController {
             throw new ServiceUnavailableException(ex.getMessage(),ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
     }
-    @PostMapping ("/text")
-    public Page<MessageESModel> getSmsByText(@RequestBody String text){
-        return messageESService.getByText(text);
+    @PostMapping ("/{text}/{page}/{size}")
+    public Page<MessageESModel> getSmsByText(@PathVariable String text, @PathVariable int page, @PathVariable int size){
+        return messageESService.getByText(text, page, size);
     }
     @PostMapping ("phrase")
     public Page<MessageESModel> getSmsByPhrase(@RequestBody SearchPhraseModel phrase){
