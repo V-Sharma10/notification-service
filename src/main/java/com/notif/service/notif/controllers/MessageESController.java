@@ -10,6 +10,7 @@ import com.notif.service.notif.services.ESService.ESService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class MessageESController {
         return messageESService.getByText(text, page, size);
     }
     @PostMapping ("phrase")
-    public Page<MessageESModel> getSmsByPhrase(@RequestBody SearchPhraseModel phrase){
+    public SearchPage<MessageESModel> getSmsByPhrase(@RequestBody SearchPhraseModel phrase){
         return messageESService.getByPhrase(phrase);
     }
 

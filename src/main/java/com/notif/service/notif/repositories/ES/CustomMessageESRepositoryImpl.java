@@ -7,10 +7,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class CustomMessageESRepositoryImpl implements CustomMessageESRepository{
     ElasticsearchOperations elasticsearchOps;
 
     @Override
-    public Page<MessageESModel> getByPhrase(SearchPhraseModel phrase) {
+    public SearchPage<MessageESModel> getByPhrase(SearchPhraseModel phrase) {
         logger.isTraceEnabled();
 //       System.out.println(phrase.getPage()+" "+ phrase.getSize()+" "+ phrase.getPhrase());
       String search = ".*"+phrase.getPhrase()+".*";
@@ -39,6 +40,7 @@ public class CustomMessageESRepositoryImpl implements CustomMessageESRepository{
 
          System.out.println(pageHits);
 
+        return SearchHitSupport.searchPageFor(pageHits, searchQuery.getPageable());
 
 //
 //         List<MessageESModel> pageList = new ArrayList<>();
@@ -48,6 +50,5 @@ public class CustomMessageESRepositoryImpl implements CustomMessageESRepository{
 //             i++;
 //         }
 //         System.out.println(pageList);
-         return null;
     }
 }

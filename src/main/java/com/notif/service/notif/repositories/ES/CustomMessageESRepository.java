@@ -2,8 +2,8 @@ package com.notif.service.notif.repositories.ES;
 
 import com.notif.service.notif.models.MessageESModel;
 import com.notif.service.notif.models.request.SearchPhraseModel;
-import org.springframework.data.domain.Page;
+import org.springframework.data.elasticsearch.core.SearchPage;
 
 public interface CustomMessageESRepository {
-     Page<MessageESModel> getByPhrase(SearchPhraseModel phrase);
+     SearchPage<MessageESModel> getByPhrase(SearchPhraseModel phrase);
 }
