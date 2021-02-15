@@ -15,6 +15,7 @@ public class HelperService {
         msgDtoConsumer.setFailureCode(ErrorCodes.BAD_REQUEST_ERROR.getCode());
         msgDtoConsumer.setFailureComments(FailureEnums.BLACKLIST.getMessage());
         msgDtoConsumer.setStatus(StatusEnums.FAILED.getCode());
+
         return msgDtoConsumer;
     }
 

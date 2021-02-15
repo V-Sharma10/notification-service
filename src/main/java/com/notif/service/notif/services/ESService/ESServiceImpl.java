@@ -25,27 +25,31 @@ public class ESServiceImpl implements ESService{
 
     @Override
     public Optional<MessageESModel> getById(String id) {
+        logger.info("getById, id = {}",id);
         return messageESRepository.findById(id);
     }
 
     @Override
     public Page<MessageESModel> getAll() {
+        logger.info("getAll");
         return (Page<MessageESModel>) messageESRepository.findAll();
     }
 
     @Override
     public Page<MessageESModel> getByText(String text, int page, int size) {
+        logger.info("getByText , text = {}, page = {}, size = {}", text, page, size);
         return messageESRepository.findByMessageContaining(text,PageRequest.of(page, size));
     }
 
     @Override
     public SearchPage<MessageESModel> getByPhrase(SearchPhraseModel phrase) {
+        logger.info("getByPhrase , text = {}, page = {}, size = {}", phrase.getPhrase(), phrase.getPage(), phrase.getSize());
         return messageESRepository.getByPhrase(phrase);
     }
 
     @Override
     public Page<MessageESModel> getMsgBetweenDates(SearchByDateModel dateModel) {
-        logger.info("getMsgBetweenDates method invoked");
+        logger.info("getMsgBetweenDates method invoked, startDate = {}, endDate = {}", dateModel.getStartDate(), dateModel.getEndDate());
 
         long startEpoch = helperUtils.dateStringToEpoch(dateModel.getStartDate());
         long endEpoch = helperUtils.dateStringToEpoch(dateModel.getEndDate());
