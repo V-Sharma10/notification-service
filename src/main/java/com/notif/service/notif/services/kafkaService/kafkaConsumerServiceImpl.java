@@ -47,16 +47,18 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
     @KafkaListener(topics = "${kafka.topic}",groupId = "${kafka.groupid}",autoStartup = "${kafka_autostart}")
     @Override
     public void listener(String message) throws InvalidRequestException, ServiceUnavailableException, NotFoundException, InvocationTargetException, IllegalAccessException {
-        System.out.println("Received Message in group foo: " + message);
+        logger.info("Got id from Producer, id = {}", message);
         MessageDtoModel msgDtoConsumer= messageDBRepository.findById(message).orElse(null);
 
         if(msgDtoConsumer==null){
+            logger.error(FailureEnums.CANT_FIND.getMessage());
             throw new ServiceUnavailableException(FailureEnums.CANT_FIND.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
 
         if(redisService.checkIfExist(msgDtoConsumer.getPhoneNumber())){
             helperService.sendingFailed(msgDtoConsumer);
             messageDBRepository.save(msgDtoConsumer);
+            logger.error(FailureEnums.BLACKLIST.getMessage());
             throw new InvalidRequestException(FailureEnums.BLACKLIST.getMessage(), ErrorCodes.BAD_REQUEST_ERROR);
         }
 
@@ -67,15 +69,17 @@ public class kafkaConsumerServiceImpl implements kafkaConsumerService{
              helperService.sendingSuccess(msgDtoConsumer,response);
              messageDBRepository.save(msgDtoConsumer);
         }catch(Exception ex){
+            logger.error(ex.getMessage());
             throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
         }
 
-        logger.info("Getting added to ES");
+        logger.info("Adding to ES, messageId = {}",message);
 
             BeanUtils.copyProperties(msgES, msgDtoConsumer);
          try{
             messageESRepository.save(msgES);
          }catch (Exception ex){
+             logger.error(ex.getMessage());
             throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
          }
     }

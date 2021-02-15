@@ -44,7 +44,7 @@ public class MessageServiceImpl implements MessageService{
             msgDto.setId(id);
             msgDto.setStatus(StatusEnums.QUEUED.getCode());
 
-            logger.info("Getting added to DB and Kafka");
+            logger.info("Getting added to DB and Kafka, id = {}",id);
             try{
                 messageDBRepository.save(msgDto);
                 kafkaProducerService.sendMessage(id);
@@ -58,6 +58,7 @@ public class MessageServiceImpl implements MessageService{
 
     @Override
     public Optional<MessageDtoModel> getDetailsById(String id) {
+        logger.info("getDetailsById id = {}",id);
         return messageDBRepository.findById(id);
     }
 }
