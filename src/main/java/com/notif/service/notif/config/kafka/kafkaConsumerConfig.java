@@ -2,11 +2,12 @@ package com.notif.service.notif.config.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Configuration
 @PropertySource("classpath:application.properties")
 public class kafkaConsumerConfig {
-
+    Logger logger = LoggerFactory.getLogger(kafkaConsumerConfig.class);
     @Value("${kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
@@ -39,6 +40,7 @@ public class kafkaConsumerConfig {
         props.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
+        logger.info("Consumer factory setup.");
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
@@ -49,6 +51,7 @@ public class kafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        logger.info("Kafka Listener Factory initialized.");
         return factory;
     }
 }

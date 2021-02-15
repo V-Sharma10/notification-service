@@ -28,7 +28,7 @@ import java.util.Optional;
 @RequestMapping("v1/sms")
 public class MessageController {
 
-    Logger logger = LoggerFactory.getLogger(MessageController.class);
+        Logger logger = LoggerFactory.getLogger(MessageController.class);
     @Autowired
     MessageService messageService;
 

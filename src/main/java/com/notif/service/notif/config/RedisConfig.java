@@ -1,5 +1,7 @@
 package com.notif.service.notif.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig extends CachingConfigurerSupport {
+    Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 //connection pooling
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(){
@@ -32,9 +35,9 @@ public class RedisConfig extends CachingConfigurerSupport {
         redisTemplate.afterPropertiesSet();
 
 
-
         redisTemplate.setDefaultSerializer(new StringRedisSerializer());
         redisTemplate.setEnableDefaultSerializer(true);
+        logger.info("Redis connected.");
         return redisTemplate;
     }
 }

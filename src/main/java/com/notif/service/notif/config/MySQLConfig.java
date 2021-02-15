@@ -1,5 +1,7 @@
 package com.notif.service.notif.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +22,7 @@ import java.util.Properties;
 @EnableJpaRepositories(entityManagerFactoryRef = "entityManagerFactory",
         basePackages = "com.notif.service.notif.repositories")
 public class MySQLConfig {
-
+    Logger logger = LoggerFactory.getLogger(MySQLConfig.class);
     @Value("${db.driver}")
     private String DB_DRIVER;
 
@@ -72,6 +74,7 @@ public class MySQLConfig {
     @Bean
     public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactory")
                                                                      EntityManagerFactory entityManagerFactory){
+            logger.info("MySQL DB connected.");
         return new JpaTransactionManager(entityManagerFactory);
     }
 }
