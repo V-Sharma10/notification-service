@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -31,13 +32,14 @@ public class MessageServiceImpl implements MessageService{
     @Autowired
     private KafkaProducerServiceImpl kafkaProducerService;
 
-    MessageDtoModel msgDto  = new MessageDtoModel();
-    MessageRequestValidator validator = new MessageRequestValidator();
+    @Autowired
+    MessageRequestValidator validator;
     @Override
+    @Transactional
     public String sendMsg(MessageRequestModel message)
             throws InvalidRequestException, NotFoundException, ServiceUnavailableException, InvocationTargetException, IllegalAccessException {
-
             validator.main(message);
+        MessageDtoModel msgDto  = new MessageDtoModel();
              BeanUtils.copyProperties(msgDto, message);
 
             String id = UUID.randomUUID().toString();
@@ -48,6 +50,7 @@ public class MessageServiceImpl implements MessageService{
             try{
                 messageDBRepository.save(msgDto);
                 kafkaProducerService.sendMessage(id);
+//                roll back in case of kafka failure
             } catch (Exception ex){
                 throw new ServiceUnavailableException(ex.getMessage(), ErrorCodes.SERVICE_UNAVAILABLE_ERROR);
             }
@@ -62,3 +65,6 @@ public class MessageServiceImpl implements MessageService{
         return messageDBRepository.findById(id);
     }
 }
+
+
+//@Transactional

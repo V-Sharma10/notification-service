@@ -38,7 +38,7 @@ public class CustomMessageESRepositoryImpl implements CustomMessageESRepository{
 
          SearchHits<MessageESModel> pageHits =  elasticsearchOps.search(searchQuery,MessageESModel.class);
 
-         System.out.println(pageHits);
+
 
         return SearchHitSupport.searchPageFor(pageHits, searchQuery.getPageable());
 
