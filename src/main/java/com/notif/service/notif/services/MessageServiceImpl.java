@@ -39,8 +39,8 @@ public class MessageServiceImpl implements MessageService{
     public String sendMsg(MessageRequestModel message)
             throws InvalidRequestException, NotFoundException, ServiceUnavailableException, InvocationTargetException, IllegalAccessException {
             validator.main(message);
-        MessageDtoModel msgDto  = new MessageDtoModel();
-             BeanUtils.copyProperties(msgDto, message);
+            MessageDtoModel msgDto  = new MessageDtoModel();
+            BeanUtils.copyProperties(msgDto, message);
 
             String id = UUID.randomUUID().toString();
             msgDto.setId(id);

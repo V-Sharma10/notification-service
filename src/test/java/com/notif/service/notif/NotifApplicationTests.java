@@ -7,6 +7,7 @@ import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.services.MessageService;
 import com.notif.service.notif.utils.enums.ErrorCodes;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -61,13 +62,13 @@ class NotifApplicationTests {
         Mockito.when(messageService.sendMsg(testMsg2)).thenThrow(new InvalidRequestException("Invalid Message", ErrorCodes.BAD_REQUEST_ERROR));
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/v1/sms/send").accept(MediaType.APPLICATION_JSON_VALUE)
-                .content(asJsonString(testMsg3))
+                .content(asJsonString(testMsg1))
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
         MvcResult result = mockMvc.perform(requestBuilder).andReturn();
         MockHttpServletResponse response = result.getResponse();
         System.out.println(response.getContentAsString());
 
-//        Assert.assertEquals(,);
+        Assert.assertEquals(new InvalidRequestException("Invalid Phone Number", ErrorCodes.BAD_REQUEST_ERROR),response);
     }
 
 
@@ -89,7 +90,7 @@ class NotifApplicationTests {
                 .andReturn();
         MockHttpServletResponse response = result.getResponse();
         System.out.println(" Response :"+response.getContentAsString());
-//        Assert.assertEquals(msg.toString(), response.getContentAsString());
+        Assert.assertEquals(Optional.ofNullable(msg), response.getContentAsString());
 
     }
 }

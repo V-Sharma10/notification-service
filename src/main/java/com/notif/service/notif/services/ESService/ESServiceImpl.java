@@ -56,7 +56,7 @@ public class ESServiceImpl implements ESService{
 
         Page<MessageESModel> page = messageESRepository
                 .findAllByCreatedAtBetween( startEpoch,
-                        endEpoch, PageRequest.of(0, 2));
+                        endEpoch, PageRequest.of(dateModel.getPage(), dateModel.getSize()));
         logger.info("Page result : {}", page.get() );
         return page;
       }
