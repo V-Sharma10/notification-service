@@ -16,7 +16,6 @@ public interface MessageESRepository extends ElasticsearchRepository<MessageESMo
     Optional<MessageESModel> findById(String id);
 
 
-
     Page<MessageESModel> findByMessageContaining(String text,Pageable pageable);
 
     @Query("{\"bool\": {\"must\": [{\"match\": {\"message\": \"?0\"}}]}}")
