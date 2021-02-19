@@ -3,7 +3,9 @@ package com.notif.service.notif;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.notif.service.notif.controllers.MessageController;
 import com.notif.service.notif.models.request.MessageRequestModel;
+import com.notif.service.notif.services.CustomUserDetailsService;
 import com.notif.service.notif.services.MessageService;
+import com.notif.service.notif.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class NotifApplicationTests {
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    private JwtUtil jwtUtil;
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
 
     @MockBean
     private MessageService messageService;
