@@ -14,7 +14,7 @@ public class OtherConfig {
     Logger logger = LoggerFactory.getLogger(OtherConfig.class);
     @Value("${imiconnect_url}")
     private String url;
-        @Value("${imiconnect_api_key}")
+    @Value("${imiconnect_api_key}")
     private String key;
 
     @Bean
