@@ -7,14 +7,18 @@ import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.models.response.Success;
 import com.notif.service.notif.services.MessageService;
+import com.notif.service.notif.services.MyUserDetailsService;
+import com.notif.service.notif.utils.JwtUtil;
 import com.notif.service.notif.utils.enums.ErrorCodes;
 import com.notif.service.notif.utils.enums.FailureEnums;
 import com.notif.service.notif.utils.enums.SuccessEnums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +32,9 @@ import java.util.Optional;
 @RequestMapping("v1/sms")
 public class MessageController {
 
-        Logger logger = LoggerFactory.getLogger(MessageController.class);
+    Logger logger = LoggerFactory.getLogger(MessageController.class);
+
+
     @Autowired
     MessageService messageService;
 
@@ -47,12 +53,20 @@ public class MessageController {
     }
 
     @PostMapping("send")
-    public ResponseEntity sendMessage(@RequestBody @Valid MessageRequestModel message){
+    public ResponseEntity sendMessage(
+            @RequestBody @Valid MessageRequestModel message){
         logger.info("sendMessage method called");
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("X-Content-type",
+                "application/json");
+
+
         try{
             String id = messageService.sendMsg(message);
             Success returnValue = new Success(id, SuccessEnums.SUBMISSION_SUCCESS.getMessage());
-            return new ResponseEntity(returnValue, HttpStatus.OK);
+            return ResponseEntity.ok()
+                    .headers(responseHeaders)
+                    .body(returnValue);
         }
         catch (NotFoundException ex) {
             throw new NotFoundException(ex.getMessage(), ErrorCodes.NOT_FOUND_ERROR);
@@ -67,5 +81,7 @@ public class MessageController {
         catch (IllegalAccessException ex){ }
     return new ResponseEntity(HttpStatus.SERVICE_UNAVAILABLE);
     }
+
+
 }
 
