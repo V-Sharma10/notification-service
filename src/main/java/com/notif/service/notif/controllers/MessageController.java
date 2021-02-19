@@ -7,8 +7,6 @@ import com.notif.service.notif.models.MessageDtoModel;
 import com.notif.service.notif.models.request.MessageRequestModel;
 import com.notif.service.notif.models.response.Success;
 import com.notif.service.notif.services.MessageService;
-import com.notif.service.notif.services.MyUserDetailsService;
-import com.notif.service.notif.utils.JwtUtil;
 import com.notif.service.notif.utils.enums.ErrorCodes;
 import com.notif.service.notif.utils.enums.FailureEnums;
 import com.notif.service.notif.utils.enums.SuccessEnums;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

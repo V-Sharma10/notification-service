@@ -2,7 +2,7 @@ package com.notif.service.notif.controllers;
 
 import com.notif.service.notif.models.authentication.AuthenticationRequest;
 import com.notif.service.notif.models.authentication.AuthenticationResponse;
-import com.notif.service.notif.services.MyUserDetailsService;
+import com.notif.service.notif.services.CustomUserDetailsService;
 import com.notif.service.notif.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class SecurityController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -39,7 +39,7 @@ public class SecurityController {
             throw new Exception("Bad Credentials.",ex);
         }
 
-        final UserDetails userDetails = myUserDetailsService
+        final UserDetails userDetails = customUserDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
         final String jwt = jwtUtil.generateToken(userDetails);

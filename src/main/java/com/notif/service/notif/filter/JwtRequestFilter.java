@@ -1,6 +1,6 @@
 package com.notif.service.notif.filter;
 
-import com.notif.service.notif.services.MyUserDetailsService;
+import com.notif.service.notif.services.CustomUserDetailsService;
 import com.notif.service.notif.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +20,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private MyUserDetailsService userDetailsService;
+    private CustomUserDetailsService userDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;

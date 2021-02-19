@@ -1,7 +1,7 @@
 package com.notif.service.notif.config;
 
 import com.notif.service.notif.filter.JwtRequestFilter;
-import com.notif.service.notif.services.MyUserDetailsService;
+import com.notif.service.notif.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +19,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService);
+        auth.userDetailsService(customUserDetailsService);
     }
 
     @Bean
